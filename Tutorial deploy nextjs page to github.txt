@@ -1,0 +1,46 @@
+STEP BY STEP DEPLOY NEXTJS TO GITHUB PAGES
+1. Buat aja dulu si aplikasi nextjs nya
+2. Install dulu si gh-pages nya -> npm install -g gh-pages --save
+3. Sementara buat repo baru dulu (dev nya lah ya), kalo udah sekiranya aman
+boleh langsung ditaro di repo egrianoa.github.io (prod)
+4. Ini optional sih : 
+- Buat file next.config.js
+- Isinya :
+const withSass = require('@zeit/next-sass');
+const isProd = (process.env.NODE_ENV || 'production') === 'production'
+const assetPrefix = isProd ? '/personal-page-v2-dev' : ''
+const webpack = require('webpack')
+module.exports = withSass({
+    devIndicators: {
+        autoPrerender: false
+    },
+    webpack: config => {
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
+            }),
+        )
+        return config;
+    },
+    exportPathMap: () => ({
+        '/': { page: '/' },
+    }),
+    assetPrefix: assetPrefix,
+});
+5. Nah, kalo aplikasinya udah siap di deploy :
+- Di package.json, dibagian scripts, tambahin "deploy" : "next build && next export"
+- (kalo ada) apus file node_modules/.cache
+- (kalo ada) apus folder out
+- jalanin command npm run deploy 
+- tambahin file .nojekyll di folder out
+- jalanin comman gh-pages -d out -t true
+6. Buka repo githubnya, terus masuk ke setting, langsung ke bagian github pages
+7. Di source, pilih gh-pages branch
+8. Terus tunggu beberapa saat, harusnya aplikasi nextjs nya udah kedeploy
+9. Kalo belom coba cek link2 ini deh HEHE
+https://medium.com/@anotherplanet/git-tips-next-js-github-pages-2dbc9a819cb8
+https://itnext.io/next-js-app-on-github-pages-768020f2b65e
+https://github.com/thierryc/Next-gh-page-example
+https://www.youtube.com/watch?v=ctLFWAanxcI
+Btww ini command2nya yg di link2 atas pake linux ya, jadi gua akalinnya pake step nomer 5
+Kalo pake linux bisa langsung ikutin step2 yg di link ajaa
